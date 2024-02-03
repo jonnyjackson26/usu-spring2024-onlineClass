@@ -11,55 +11,36 @@ loanAmountElement.value=defaultLoanAmount;
 annualInterestRateElement.value=defaultAnnualInterestRate;
 numberOfYearsElement.value=defaultNumberOfYears;
 
-loanAmountElement.addEventListener('blur', () => {
-    if(loanAmountElement.value=="") {
-        loanAmountElement.value=defaultLoanAmount;
-    }
-})
-annualInterestRateElement.addEventListener('blur', () => {
-    if(annualInterestRateElement.value=="") {
-        annualInterestRateElement.value=defaultAnnualInterestRate;
-    }
-})
-numberOfYearsElement.addEventListener('blur', () => {
-    if(numberOfYearsElement.value=="") {
-        numberOfYearsElement.value=defaultNumberOfYears;
-    }
-})
-
 setMonthlyPaymentMessage();
 
-numberOfYearsElement.addEventListener('input', () => {
-    if(isNaN(numberOfYearsElement.value)) {
-        monthlyPaymentMessageElement.innerHTML="Make sure you only put in numbers for the number of years.";
-    } else {
-        setMonthlyPaymentMessage();
-    }
-});
-annualInterestRateElement.addEventListener('input', () => {
-    if(isNaN(annualInterestRateElement.value)) {
-        monthlyPaymentMessageElement.innerHTML="Make sure you only put in numbers for the number of years.";
-    } else {
-        setMonthlyPaymentMessage();
-    }
-});
-loanAmountElement.addEventListener('input', () => {
-    if(isNaN(loanAmountElement.value)) {
-        monthlyPaymentMessageElement.innerHTML="Make sure you only put in numbers for the number of years.";
-    } else {
-        setMonthlyPaymentMessage();
-    }
-});
+addEventListeners(numberOfYearsElement);
+addEventListeners(annualInterestRateElement);
+addEventListeners(loanAmountElement);
 
+function addEventListeners(whichElement) {
+    whichElement.addEventListener('input', () => {
+        setMonthlyPaymentMessage();
+    });
+    whichElement.addEventListener('blur', () => {
+        if(whichElement.value=="") {
+            whichElement.value=defaultNumberOfYears;
+            setMonthlyPaymentMessage();
+        }
+    })
+}
 
 
 function setMonthlyPaymentMessage() {
-    let loanAmount=parseFloat(loanAmountElement.value);
-    let annualInterestRate=parseFloat(annualInterestRateElement.value);
-    let numberOfYears=parseFloat(numberOfYearsElement.value);
-    let monthlyInterestRate=(annualInterestRate/100)/12;
-    let n=numberOfYears*12;
-    let monthlyMortgagePayment=loanAmount*((monthlyInterestRate*Math.pow(1+ monthlyInterestRate, n))/(Math.pow(1+ monthlyInterestRate, n)-1));
+    if(isNaN(numberOfYearsElement.value) || numberOfYearsElement.value=='' || isNaN(loanAmountElement.value) || loanAmountElement.value=='' || isNaN(annualInterestRateElement.value) || annualInterestRateElement.value=='') {
+        monthlyPaymentMessageElement.innerHTML="Make sure all your values are numerical.";
+    } else {
+        let loanAmount=parseFloat(loanAmountElement.value);
+        let annualInterestRate=parseFloat(annualInterestRateElement.value);
+        let numberOfYears=parseFloat(numberOfYearsElement.value);
+        let monthlyInterestRate=(annualInterestRate/100)/12;
+        let n=numberOfYears*12;
+        let monthlyMortgagePayment=loanAmount*((monthlyInterestRate*Math.pow(1+ monthlyInterestRate, n))/(Math.pow(1+ monthlyInterestRate, n)-1));
 
-    monthlyPaymentMessageElement.innerHTML=`Monthly Payment: $${monthlyMortgagePayment.toFixed(2)}`;
+        monthlyPaymentMessageElement.innerHTML=`Monthly Payment: $${monthlyMortgagePayment.toFixed(2)}`;
+    }
 }
